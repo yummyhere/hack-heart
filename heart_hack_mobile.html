@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>HEART HACK — ACCESS GRANTED</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root{
+  --neon-green: #00ff88;
+  --neon-pink: #ff00ff;
+  --bg-deep: #040007;
+  --card-bg: rgba(10,2,18,0.88);
+}
+
+html,body{
+  height:100%;
+  margin:0;
+  padding:0;
+  background:radial-gradient(circle at 25% 10%, #080016 0%, #000 60%);
+  font-family:'VT323',monospace;
+  color:var(--neon-green);
+  overflow:hidden;
+}
+
+/* outer glow frame */
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  border:2px solid var(--neon-pink);
+  border-radius:18px;
+  box-shadow:
+    0 0 20px var(--neon-pink),
+    0 0 40px var(--neon-green),
+    inset 0 0 20px rgba(255,0,255,0.5),
+    inset 0 0 30px rgba(0,255,136,0.4);
+  pointer-events:none;
+  z-index:5;
+  animation:pulseGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from { box-shadow:0 0 16px var(--neon-pink),0 0 28px var(--neon-green),inset 0 0 14px rgba(255,0,255,0.4); }
+  to { box-shadow:0 0 26px var(--neon-pink),0 0 60px var(--neon-green),inset 0 0 28px rgba(255,0,255,0.6); }
+}
+
+.console-text{ text-shadow:0 0 8px var(--neon-green), 0 0 20px var(--neon-pink); }
+
+/* start screen */
+#startScreen{display:flex;align-items:center;justify-content:center;min-height:100svh;padding:20px;}
+.card{width:100%;max-width:520px;background:var(--card-bg);border:1px solid rgba(255,0,255,0.14);padding:22px;border-radius:14px;box-shadow:0 8px 30px rgba(255,0,255,0.06);}
+.title{font-size:clamp(18px,4vw,22px);color:var(--neon-pink);margin-bottom:10px;text-align:center;font-weight:800;}
+.sub{font-size:clamp(12px,2.8vw,14px);color:#9af7c7;margin-bottom:18px;text-align:center;}
+.btn{display:inline-block;width:100%;background:linear-gradient(90deg,#ff39b7,#ff0077);color:#fff;border:0;padding:14px;border-radius:10px;font-weight:900;font-size:clamp(14px,3.6vw,16px);letter-spacing:0.6px;box-shadow:0 6px 18px rgba(255,0,255,0.12);}
+
+/* glowing console */
+#hackConsole{
+  position:fixed;
+  inset:0;
+  display:none;
+  padding:12px;
+  box-sizing:border-box;
+  background:linear-gradient(180deg,#000,#070014);
+  border:2px solid var(--neon-green);
+  border-radius:12px;
+  box-shadow:
+    0 0 12px var(--neon-green),
+    0 0 24px var(--neon-pink),
+    inset 0 0 15px rgba(0,255,136,0.3),
+    inset 0 0 25px rgba(255,0,255,0.2);
+  -webkit-backdrop-filter:blur(2px);
+  z-index:10;
+}
+#logOutput{width:100%;margin:0 auto;padding:16px;height:calc(100svh - 110px);overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:clamp(12px,3.2vw,16px);line-height:1.45;color:var(--neon-green);}
+#logOutput div{margin:6px 0;white-space:pre-wrap;word-break:break-word;}
+
+.console-footer{position:fixed;left:0;right:0;bottom:0;padding:10px;display:flex;gap:10px;justify-content:center;align-items:center;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.28));}
+.small-btn{background:rgba(255,255,255,0.04);color:#fff;border:1px solid rgba(255,255,255,0.1);padding:10px 14px;border-radius:10px;font-weight:700;font-size:14px;box-shadow:0 0 8px rgba(255,255,255,0.2);}
+
+/* surprise screen */
+#surpriseScreen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:18px;opacity:0;pointer-events:none;transition:opacity .7s ease;}
+#surpriseScreen.active{opacity:1;pointer-events:auto;}
+#surpriseTitle{color:var(--neon-pink);font-size:clamp(28px,7vw,64px);text-align:center;text-shadow:0 0 14px var(--neon-pink),0 0 28px rgba(255,102,255,0.6);margin:0;}
+#finalMessage{width:100%;max-width:900px;padding:20px;border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0.75),rgba(5,0,12,0.55));border:2px solid var(--neon-pink);box-shadow:0 0 20px var(--neon-pink),0 0 30px var(--neon-green);color:var(--neon-green);font-size:clamp(13px,3.2vw,18px);line-height:1.6;white-space:pre-wrap;}
+
+/* binary rain */
+.binary{position:fixed;pointer-events:none;color:var(--neon-green);text-shadow:0 0 8px var(--neon-green);opacity:0.9;font-size:12px;z-index:60;animation:floatBinary linear forwards;}
+@keyframes floatBinary{from{transform:translateY(0);opacity:1;}to{transform:translateY(-110vh);opacity:0;}}
+
+.flash{position:fixed;inset:0;background:#fff;z-index:9999;opacity:1;}
+@media(max-width:520px){#logOutput{height:calc(100svh - 120px);padding:12px;}.card{padding:18px;border-radius:12px;}.btn{padding:12px;font-size:16px;}}
+@media(prefers-reduced-motion:reduce){.binary{animation:none!important;}body::before{animation:none!important;}}
+</style>
+</head>
+<body>
+
+<!-- start -->
+<div id="startScreen">
+  <div class="card">
+    <div class="title console-text">[ HEART HACK — INITIALIZATION ]</div>
+    <div class="sub">Target detected: <strong style="color:var(--neon-pink)">Aloo Miaaa</strong></div>
+    <button id="startBtn" class="btn">START PROTOCOL</button>
+    <div style="margin-top:10px;font-size:12px;color:#9aa;text-align:center;">Tap to authorize audio & start terminal</div>
+  </div>
+</div>
+
+<!-- console -->
+<div id="hackConsole">
+  <div id="logOutput" class="console-text"></div>
+  <div class="console-footer">
+    <button id="skipBtn" class="small-btn">SKIP TO REVEAL</button>
+    <button id="replayBtn" class="small-btn">REPLAY</button>
+  </div>
+</div>
+
+<!-- surprise -->
+<div id="surpriseScreen">
+  <h1 id="surpriseTitle">ACCESS GRANTED</h1>
+  <div id="finalMessage" class="console-text"></div>
+</div>
+
+<script>
+const startBtn=document.getElementById("startBtn"),startScreen=document.getElementById("startScreen"),hackConsole=document.getElementById("hackConsole"),logOutput=document.getElementById("logOutput"),skipBtn=document.getElementById("skipBtn"),replayBtn=document.getElementById("replayBtn"),surpriseScreen=document.getElementById("surpriseScreen"),finalMessage=document.getElementById("finalMessage");
+
+const LOG_LINES=[
+">>> INITIALIZING HEART HACK MODULE",
+">>> TARGET: ALOO MIAAA",
+">>> ESTABLISHING SECURE LINK...",
+">>> SCANNING EMOTIONAL FIREWALLS...",
+">>> DEPLOYING AFFECTION PAYLOAD",
+">>> DECRYPTING HIDDEN FEELINGS",
+">>> ACCESSING DEEP HEART FILES",
+">>> AUTHENTICATING OPERATOR: APKIII_MOTUUU",
+">>> PROCESSING BIRTHDAY OVERRIDE",
+">>> EXECUTING: APKIII_MOTUUU_HEARTHACK.EXE",
+">>> ACCESS GRANTED"
+];
+const FINAL_MESSAGE_TEXT=`SYSTEM LOG
+───────────────────────────────
+Target: Aloo Miaaa
+Status: HEART HACKED — ACCESS GRANTED
+Operator: Apkiii Motuuu
+───────────────────────────────
+> Emotional firewall bypassed.
+> Eternal connection established.
+> Feelings encrypted with infinite fidelity.
+───────────────────────────────
+MISSION RESULT: ACCESS GRANTED
+───────────────────────────────
+Aloo Miaaa, your firewall was strong…
+But not strong enough for Apkiii Motuuu’s love virus.
+You've been infected with eternal pyaar — no antivirus can remove it.
+Happy Birthday, my sweetest Aloo Miaaa😚.
+Your heart belongs to Apkiii Motuuu forever.
+`;
+
+let audioCtx=null;
+function ensureAudio(){if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();}return audioCtx;}
+function playTick(){try{const ac=ensureAudio(),o=ac.createOscillator(),g=ac.createGain();o.type="square";o.frequency.setValueAtTime(880,ac.currentTime);o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(.0001,ac.currentTime);g.gain.linearRampToValueAtTime(.06,ac.currentTime+.002);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+.12);o.start(ac.currentTime);o.stop(ac.currentTime+.13);}catch(e){}}
+function playReveal(){try{const ac=ensureAudio(),now=ac.currentTime,freqs=[160,240,320],gM=ac.createGain();gM.gain.value=.0001;gM.connect(ac.destination);gM.gain.linearRampToValueAtTime(.09,now+.01);gM.gain.exponentialRampToValueAtTime(.0001,now+1);freqs.forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(gM);g.gain.value=.0001;g.gain.linearRampToValueAtTime(.04/(i+1),now+.03+i*.02);g.gain.exponentialRampToValueAtTime(.0001,now+.9+i*.02);o.start(now+i*.02);o.stop(now+.95+i*.02);});}catch(e){}}
+function appendLog(t){const d=document.createElement("div");d.textContent=t;logOutput.appendChild(d);logOutput.scrollTo({top:logOutput.scrollHeight,behavior:"smooth"});playTick();}
+let binInt=null;
+function startBinaryRain(){stopBinaryRain();const small=innerWidth<520,freq=small?90:55;binInt=setInterval(()=>{const b=document.createElement("div");b.className="binary";let s="";for(let i=0;i<6;i++)s+=Math.random()>.5?"0":"1";b.textContent=s;b.style.left=Math.random()*100+"vw";b.style.bottom="-6vh";b.style.fontSize=Math.min(16,Math.max(10,innerWidth*.02))+"px";const dur=small?2500+Math.random()*800:3200+Math.random()*800;b.style.animationDuration=dur+"ms";document.body.appendChild(b);setTimeout(()=>b.remove(),dur+50);},freq);}
+function stopBinaryRain(){if(binInt)clearInterval(binInt);}
+function flash(){const f=document.createElement("div");f.className="flash";document.body.appendChild(f);f.animate([{opacity:1},{opacity:0}],{duration:420,easing:"ease"});setTimeout(()=>f.remove(),430);}
+let active=true;
+async function startSequence(){ensureAudio();startScreen.style.display="none";hackConsole.style.display="block";logOutput.innerHTML="";active=true;for(let i=0;i<LOG_LINES.length&&active;i++){appendLog(LOG_LINES[i]);await new Promise(r=>setTimeout(r,innerWidth<520?380:520));}await new Promise(r=>setTimeout(r,420));flash();revealSurprise();}
+function revealSurprise(){if(!active)return;active=false;hackConsole.style.display="none";surpriseScreen.classList.add("active");finalMessage.textContent=FINAL_MESSAGE_TEXT;startBinaryRain();playReveal();}
+function replay(){stopBinaryRain();surpriseScreen.classList.remove("active");hackConsole.style.display="block";logOutput.innerHTML="";active=true;startSequence();}
+startBtn.addEventListener("click",startSequence);
+skipBtn.addEventListener("click",()=>{ensureAudio();flash();revealSurprise();});
+replayBtn.addEventListener("click",()=>{ensureAudio();replay();});
+</script>
+</body>
+</html>
